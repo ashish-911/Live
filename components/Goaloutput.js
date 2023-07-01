@@ -3,21 +3,17 @@ import { StyleSheet, View, FlatList, Text, Pressable } from "react-native";
 
 const Goaloutput = (props) => {
 
-    const dltGoal = (goals) => {
-        // props.goalValue()
 
-        console.log(())
-
-    }
 
     return (
         <FlatList style={Styles.container2} data={props.goalValue}
-            renderItem={(goals) =>
-                <Pressable onPress={dltGoal(goals)}>
-                    <View>
+            renderItem={goals => {
+                return (
+                    <Pressable onPress={() => { props.deleteItem(goals.item.id) }}>
                         <Text style={Styles.text}>{goals.item.data}</Text>
-                    </View>
-                </Pressable>
+                    </Pressable>
+                )
+            }
             } />
 
     )

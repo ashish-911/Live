@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Pressable, StyleSheet, TextInput, View, Text, Alert, ScrollView, FlatList } from "react-native";
+import { Button, Pressable, StyleSheet, TextInput, View, Text, Alert, ScrollView, FlatList, Modal } from "react-native";
 "react-native";
 import GoalInput from "./components/Goalinput";
 import Goaloutput from "./components/Goaloutput";
@@ -23,17 +23,29 @@ const App = () => {
   }
 
   const dltItem = (id) => {
-    // setGoals()
-    setGoals((currentGoals) => currentGoals.filter(goals.id !== id))
+    setGoals((currentGoals) => { return currentGoals.filter((item) => item.id !== id) })
+  };
 
+
+  const [visibility, setVisibility] = useState(false)
+
+  const trueVisibility = () => {
+    setVisibility(true)
+  };
+
+  const falseVisibility = () => {
+    setVisibility(false)
   }
+
 
   return (
     <View style={Styles.container}>
 
-      <GoalInput goalHint={goalHandler} />
+      <Button title="Add Goal" onPress={trueVisibility} />
+      <Modal visible={visibility} animationType="slide">
+        <GoalInput goalHint={goalHandler} modVisible={falseVisibility} />
+      </Modal>
       <Goaloutput goalValue={goals} deleteItem={dltItem} />
-
     </View >
   )
 }
@@ -42,7 +54,7 @@ const Styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 4,
-    justifyContent: 'center'
+    backgroundColor: '#ba97e5'
   },
 
 });

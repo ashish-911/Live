@@ -1,63 +1,68 @@
-import React, { useState } from "react";
-import { Button, Pressable, StyleSheet, TextInput, View, Text, Alert, ScrollView, FlatList, Modal } from "react-native";
-"react-native";
-import GoalInput from "./components/Goalinput";
-import Goaloutput from "./components/Goaloutput";
+import { ImageBackground, StyleSheet, Text, View, KeyboardAvoidingView, ScrollView } from 'react-native';
+import StartGameScreen from './Screens/StartGameScreen';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useState } from 'react';
+import Colors from './Constants/Colors';
+import GameScreen from './Screens/GameScreen';
+import GameOverScreen from './Screens/GameOverScreen';
+import { StatusBar } from 'expo-status-bar';
+
+export default function App() {
+
+  const [userNumber, setUserNumber] = useState();
+  const [gameIsOver, setGameIsOver] = useState(false)
+  const [rounds, setRounds] = useState(0)
 
 
-const App = () => {
-
-
-  const [goals, setGoals] = useState([])
-
-
-
-  const goalHandler = (input) => {
-
-    if (input == null || input == "") {
-      Alert.alert('Warning', 'Enter Your Goal')
-    }
-    else {
-      setGoals(currentGoals => [...currentGoals, { data: input, id: Math.random().toString() }]);
-    }
+  function pickNumberHandler(pickedNumber) {
+    setUserNumber(pickedNumber);
   }
 
-  const dltItem = (id) => {
-    setGoals((currentGoals) => { return currentGoals.filter((item) => item.id !== id) })
-  };
+  let screen = <StartGameScreen onPicked={pickNumberHandler} />
 
-
-  const [visibility, setVisibility] = useState(false)
-
-  const trueVisibility = () => {
-    setVisibility(true)
-  };
-
-  const falseVisibility = () => {
-    setVisibility(false)
+  if (userNumber) {
+    screen = <GameScreen userNumber={userNumber} onGameOver={gameOverHandler}
+      onCountRound={countingRounds} />
   }
 
+  function gameOverHandler() {
+    setGameIsOver(true)
+
+  }
+
+  if (gameIsOver && userNumber) {
+    screen = <GameOverScreen userNumber={userNumber} totalRounds={rounds} newGame={newGameHandler} />
+  }
+
+  function countingRounds() {
+    setRounds((rounds) => rounds + 1)
+    // console.log(rounds)
+  }
+
+  function newGameHandler() {
+    setRounds(0);
+    setGameIsOver(true)
+    setUserNumber(null)
+  }
 
   return (
-    <View style={Styles.container}>
-
-      <Button title="Add Goal" onPress={trueVisibility} />
-      <Modal visible={visibility} animationType="slide">
-        <GoalInput goalHint={goalHandler} modVisible={falseVisibility} />
-      </Modal>
-      <Goaloutput goalValue={goals} deleteItem={dltItem} />
-    </View >
-  )
+    <>
+      <StatusBar style='auto' />
+      < LinearGradient colors={[Colors.secondary500, Colors.primary600,]} style={styles.container}>
+        <ImageBackground imageStyle={{ opacity: 0.15 }} source={require('./components/Images/background.png')}
+          resizeMode='cover' style={styles.container} >
+          {screen}
+        </ImageBackground>
+      </LinearGradient>
+    </>
+  );
 }
 
-const Styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 4,
-    backgroundColor: '#ba97e5'
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1
   },
-
+  container: {
+    flex: 1
+  },
 });
-
-
-export default App;

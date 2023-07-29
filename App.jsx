@@ -36,7 +36,7 @@ export default function App() {
 
   function countingRounds() {
     setRounds((rounds) => rounds + 1)
-    // console.log(rounds)
+    console.log(rounds)
   }
 
   function newGameHandler() {
